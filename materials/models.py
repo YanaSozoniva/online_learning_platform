@@ -26,7 +26,11 @@ class Lesson(models.Model):
     description = models.TextField(
         verbose_name="Описание урока", null=True, blank=True, help_text="Краткое описание урока"
     )
-    url_video = models.URLField(verbose_name="Ссылка на видео", null=True, blank=True,)
+    url_video = models.URLField(
+        verbose_name="Ссылка на видео",
+        null=True,
+        blank=True,
+    )
     course = models.ForeignKey(
         Course,
         on_delete=models.SET_NULL,
