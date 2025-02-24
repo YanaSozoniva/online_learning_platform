@@ -57,6 +57,9 @@ class Payment(AbstractUser):
     amount_payment = models.PositiveIntegerField(verbose_name='Сумма оплаты', default=0, help_text='Введите дату оплаты')
     method_payment = models.CharField(max_length=30, choices=STATUS_CHOICES,  blank=True, null=True)
 
+    groups = models.ManyToManyField(Group, related_name='payment_groups')
+    user_permissions = models.ManyToManyField(Permission, related_name='payment_permissions')
+
     class Meta:
         verbose_name = "Платеж"
         verbose_name_plural = "Платежи"
