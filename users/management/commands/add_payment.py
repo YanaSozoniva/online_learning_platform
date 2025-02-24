@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        course, _ = Course.objects.get_or_create(id=1)
+        course, _ = Course.objects.get_or_create(id=4)
         lesson, _ = Lesson.objects.get_or_create(id=3)
         user, _ = User.objects.get_or_create(id=4)
 

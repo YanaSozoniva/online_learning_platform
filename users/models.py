@@ -41,7 +41,7 @@ class User(AbstractUser):
         return self.email
 
 
-class Payment(AbstractUser):
+class Payment(models.Model):
     CASH = "cash"
     NON_CASH = "non_cash"
 
@@ -50,15 +50,12 @@ class Payment(AbstractUser):
         (NON_CASH, "Перевод на счет"),
     ]
 
-    user = models.ForeignKey(User,  on_delete=models.CASCADE, related_name='payments')
+    user = models.ForeignKey(User,  on_delete=models.CASCADE, related_name='payments', blank=True, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='payments', blank=True, null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='payments', blank=True, null=True)
     data_payment = models.DateField(verbose_name='дата оплаты')
     amount_payment = models.PositiveIntegerField(verbose_name='Сумма оплаты', default=0, help_text='Введите дату оплаты')
     method_payment = models.CharField(max_length=30, choices=STATUS_CHOICES,  blank=True, null=True)
-
-    groups = models.ManyToManyField(Group, related_name='payment_groups')
-    user_permissions = models.ManyToManyField(Permission, related_name='payment_permissions')
 
     class Meta:
         verbose_name = "Платеж"
