@@ -14,6 +14,7 @@ class UserViewSet(ModelViewSet):
     def get_permissions(self):
         if self.action == "create":
             self.permission_classes = (AllowAny,)
+        return super().get_permissions()
 
     def perform_create(self, serializer):
         user = serializer.save(is_active=True)
