@@ -1,19 +1,28 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from users.models import Payment, User
-from users.serializers import PaymentSerializer, UserSerializer
+from users.permissions import IsUser
+from users.serializers import PaymentSerializer, UserSerializer, UserDetailSerializer
 
 
 class UserViewSet(ModelViewSet):
-    serializer_class = UserSerializer
     queryset = User.objects.all()
+
+    def get_serializer_class(self):
+        if self.action in ["retrieve", "list"]:
+            return UserDetailSerializer
+        return UserSerializer
 
     def get_permissions(self):
         if self.action == "create":
             self.permission_classes = (AllowAny,)
+        elif self.action in ["update", "partial_update", "destroy"]:
+            self.permission_classes = (IsUser, IsAuthenticated,)
+        elif self.action == "retrieve":
+            self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()
 
     def perform_create(self, serializer):
