@@ -5,7 +5,7 @@ from materials.validators import validate_third_party_resources
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    url_video = serializers.URLField(validators=[validate_third_party_resources])
+    url_video = serializers.URLField(required=False, validators=[validate_third_party_resources])
 
     class Meta:
         model = Lesson
