@@ -1,5 +1,5 @@
-from rest_framework import generics
 from django.shortcuts import get_object_or_404
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,14 +21,13 @@ class SubscriptionAPIView(APIView):
         # Если подписка у пользователя на этот курс есть - удаляем ее
         if subs_item.exists():
             subs_item.delete()
-            message = 'подписка удалена'
+            message = "подписка удалена"
         # Если подписки у пользователя на этот курс нет - создаем ее
         else:
             subs_item.create(course=course_item, user=user)
-            message = 'подписка добавлена'
+            message = "подписка добавлена"
         # Возвращаем ответ в API
         return Response({"message": message})
-
 
 
 class CourseViewSet(ModelViewSet):

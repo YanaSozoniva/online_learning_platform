@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from materials.models import Course, Lesson
+from materials.models import Course, Lesson, Subscription
 from materials.validators import validate_third_party_resources
 
 
@@ -19,6 +19,11 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_count_lessons_in_course(self, course):
         return Lesson.objects.filter(course=course).count()
+
+    subscription_to_course = serializers.SerializerMethodField()
+
+    def get_subscription_to_course(self, course):
+        return Subscription.objects.filter(course=course).exists()
 
     class Meta:
         model = Course
