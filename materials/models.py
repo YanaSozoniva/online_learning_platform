@@ -61,11 +61,10 @@ class Subscription(models.Model):
         related_name="subscriptions",
     )
     user = models.ForeignKey(AUTH_USER_MODEL, verbose_name="Пользователь", on_delete=models.CASCADE)
-    status_subscrip = models.BooleanField(verbose_name="Статус подписки", default=True)
 
     class Meta:
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
 
     def __str__(self):
-        return f"{self.course} - {self.status_subscrip}"
+        return f"{self.course} - {self.user}"
