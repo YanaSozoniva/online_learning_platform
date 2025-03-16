@@ -52,13 +52,16 @@ class PaymentCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         payment = serializer.save(user=self.request.user)
+        course_id = self.request.data.get("course")
 
-        if self.request.data.get("course"):
-            payment.course = self.request.data.get("course")
-            product = get_object_or_404(Course, pk=payment.course)
+        if course_id:
+            payment.course = get_object_or_404(Course, pk=course_id)
+            product = payment.course.name
         else:
-            payment.lesson = self.request.data.get("lesson")
-            product = get_object_or_404(Lesson, pk=payment.lesson)
+            lesson_id = self.request.data.get("lesson")
+            payment.lesson = get_object_or_404(Lesson, pk=lesson_id)
+            product = payment.lesson.name
+
         product_id = PaymentStripe.create_stripe_product(product)
         amount = self.request.data.get("amount_payment")
         price = PaymentStripe.create_stripe_price(product_id, amount)
