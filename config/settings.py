@@ -160,6 +160,13 @@ CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
+CELERY_BEAT_SCHEDULE = {
+    'block_user': {
+        'task': 'users.tasks.block_user',
+        'schedule': timedelta(days=1),
+        },
+    }
+
 EMAIL_HOST = "smtp.yandex.ru"
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False
