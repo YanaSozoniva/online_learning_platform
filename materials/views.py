@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,6 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from materials.models import Course, Lesson, Subscription
 from materials.paginators import CustomPagination
 from materials.serializers import CourseSerializer, LessonSerializer
+from materials.tasks import send_info_about_course_update
 from users.permissions import IsModer, IsOwner
 
 
@@ -54,6 +56,13 @@ class CourseViewSet(ModelViewSet):
         course = serializer.save()
         course.owner = self.request.user
         course.save()
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        subscriptions = Subscription.objects.filter(course=course.id)
+        if subscriptions:
+            email_list = [subscription.user.email for subscription in subscriptions]
+            send_info_about_course_update.delay(course.name, email_list)
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
