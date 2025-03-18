@@ -1,8 +1,8 @@
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-from django.shortcuts import get_object_or_404
 
 from materials.models import Course, Lesson
 from users.models import Payment, User
