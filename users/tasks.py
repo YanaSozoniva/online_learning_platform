@@ -15,5 +15,6 @@ def block_user():
         user.is_active = False
         user.save()
         print(
-            f"Пользователь {user.email} заблокирован, т.к. заходил последний раз более 30 дней назад: {user.last_login}"
+            f"Пользователь {user.email} заблокирован, т.к. заходил последний раз более 30 дней назад:"
+            f" {user.last_login}"
         )
