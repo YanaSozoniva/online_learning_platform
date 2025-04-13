@@ -81,22 +81,11 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-#      - name: Deploy to server
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-#          docker stop myapp || true
-#          docker rm myapp || true
-#          docker run -d --name myapp -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-#          EOF
-
-      - name: Debug Keys
+      - name: Deploy to server
         run: |
-          ssh-keygen -lf ~/.ssh/id_ed25519
-          ssh -vvv -o BatchMode=yes -i ~/.ssh/id_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "echo 'Success!'"
-
-      - name: Deploy
-        run: |
-          run: ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_ed25519 ubuntu@158.160.90.74
-              ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} \
-              "docker pull ${{ secrets.DOCKER_IMAGE }} && docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+          docker stop myapp || true
+          docker rm myapp || true
+          docker run -d --name myapp -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+          EOF
