@@ -78,6 +78,10 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+          ssh-add -L > ~/.ssh/public_key  # Для отладки
+
+      - name: Test SSH connection
+        run: ssh -v -o BatchMode=yes ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "echo 'Connection successful'"
 
       - name: Deploy to Server
         run: |
