@@ -44,6 +44,9 @@ jobs:
       - name: Set environment variables
         run: echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
 
+      - name: Run migrations
+        run: python manage.py migrate
+
       - name: Run tests
         run: python manage.py test
 
@@ -73,27 +76,11 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
-
-      - name: Add server to known hosts
+      - name: Add known hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-          ssh-add -L > ~/.ssh/public_key  # Для отладки
 
-      - name: Test SSH connection
-        run: ssh -v -o BatchMode=yes ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "echo 'Connection successful'"
-
-      - name: Deploy to Server
+      - name: Deploy to server
         run: |
-          ssh -o BatchMode=yes -o ConnectTimeout=5 \
-            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} <<'EOF'
-            set -e  # Выход при ошибке любой команды
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-            docker stop myapp || true
-            docker rm myapp || true
-            docker run -d \
-              --name myapp \
-              -p 80:8000 \
-              -e NODE_ENV=production \
-              ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-          EOF
+          ssh -o StrictHostKeyChecking=yes ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'EOF'
