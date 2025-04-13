@@ -90,9 +90,13 @@ jobs:
 #          docker run -d --name myapp -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
 #          EOF
 
+      - name: Debug Keys
+        run: |
+          ssh-keygen -lf ~/.ssh/id_ed25519
+          ssh -vvv -o BatchMode=yes -i ~/.ssh/id_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "echo 'Success!'"
+
       - name: Deploy
         run: |
-          ssh -o BatchMode=yes -i ~/.ssh/id_ed25519 \
+          run: ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_ed25519 ubuntu@158.160.90.74
               ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} \
-              "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}:${{ github.sha }} \
-              && docker-compose up -d"
+              "docker pull ${{ secrets.DOCKER_IMAGE }} && docker-compose up -d"
